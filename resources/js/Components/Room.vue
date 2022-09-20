@@ -1,6 +1,6 @@
 <template>
     <li >
-        <img :src="image" alt="" class="avatar">
+        <img :src="photo(user.image)" alt="" class="avatar">
         <div>
             <h2>{{user.name}}</h2>
             <h3>
@@ -43,8 +43,8 @@ export default {
             (  a.id != localStorage.getItem('id') ) ? this.user = a : this.user = b ;
             this.photo()
         },
-        photo(){
-            this.image = '/images/' + this.user.image
+        photo(avatar){
+            return '/images/' + avatar
         },
         listen() {
             Echo.join('chat')

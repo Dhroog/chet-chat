@@ -20,11 +20,19 @@ class start extends Seeder
      */
     public function run()
     {
+
+        $yousef = new User();
+        $yousef->name = 'chet-chat';
+        $yousef->email = 'chet-chat@gmail.com';
+        $yousef->password = Hash::make(1);
+        $yousef->image = 'luffy.png';
+        $yousef->save();
+
         $yousef = new User();
         $yousef->name = 'يوسف';
         $yousef->email = 'yousef@gmail.com';
         $yousef->password = Hash::make(1);
-        $yousef->image = 'avatar.jpg';
+        $yousef->image = 'luffy.png';
         $yousef->save();
 
         $saed = new User();
@@ -41,6 +49,32 @@ class start extends Seeder
         $firase->image = 'avatar.jpg';
         $firase->save();
 
+        $yousef->fr()->create([
+            'friend_id' => $saed->id
+        ]);
+
+        $yousef->fr()->create([
+            'friend_id' => $firase->id
+        ]);
+
+        $saed->fr()->create([
+            'friend_id' => $firase->id
+        ]);
+
+        $saed->fr()->create([
+            'friend_id' => $yousef->id
+        ]);
+
+        $firase->fr()->create([
+            'friend_id' => $yousef->id
+        ]);
+
+        $firase->fr()->create([
+            'friend_id' => $saed->id
+        ]);
+
+
+
         $room1 = new Room();
         $room1->save();
         $room2 = new Room();
@@ -50,32 +84,32 @@ class start extends Seeder
 
         $room_user = new room_user();
         $room_user->user_id = $yousef->id;
-        $room_user->friend_id = $room1->id;
+        $room_user->room_id = $room1->id;
         $room_user->save();
 
         $room_user = new room_user();
         $room_user->user_id = $saed->id;
-        $room_user->friend_id = $room1->id;
+        $room_user->room_id = $room1->id;
         $room_user->save();
 
         $room_user = new room_user();
         $room_user->user_id = $yousef->id;
-        $room_user->friend_id = $room2->id;
+        $room_user->room_id = $room2->id;
         $room_user->save();
 
         $room_user = new room_user();
         $room_user->user_id = $firase->id;
-        $room_user->friend_id = $room2->id;
+        $room_user->room_id = $room2->id;
         $room_user->save();
 
         $room_user = new room_user();
         $room_user->user_id = $saed->id;
-        $room_user->friend_id = $room3->id;
+        $room_user->room_id = $room3->id;
         $room_user->save();
 
         $room_user = new room_user();
         $room_user->user_id = $firase->id;
-        $room_user->friend_id = $room3->id;
+        $room_user->room_id = $room3->id;
         $room_user->save();
 
         User::factory()->count(10)

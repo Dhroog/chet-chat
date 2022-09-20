@@ -1,18 +1,43 @@
 <template>
-    <nav class=" center navbar navbar-expand-sm bg-dark navbar-dark">
+    <nav class="  navbar navbar-expand-sm bg-dark navbar-dark">
 
-                <router-link class="aa" :to="{name :'Home' }">Requests Friendship</router-link>
-                <router-link class="aa" :to="{name :'Auth' }">Auth</router-link>
-                <router-link class="aa" :to="{name :'Chat' }">Chat</router-link>
-                 <router-link class="aa" :to="{name :'Dashboard' }">Users</router-link>
-
+        <router-link v-if="$store.getters.getToken !== 0 "  :to="{name :'Home' }" >Requests Friendship</router-link>
+        <router-link  v-if="$store.getters.getToken === 0"  :to="{name :'Auth' }">Sign in/up</router-link>
+        <router-link v-if="$store.getters.getToken !== 0 "  :to="{name :'Chat' }">Chat</router-link>
+        <router-link v-if="$store.getters.getToken !== 0 "  :to="{name :'Dashboard' }">Users</router-link>
+        <router-link v-if="$store.getters.getToken !== 0 "  :to="{name :'Logout' }">Profile</router-link>
+        <a  v-if="$store.getters.getToken !== 0"  @click="logout">
+            Log out
+        </a>
     </nav>
         <router-view></router-view>
 
 </template>
 
 <script>
+import store from "../Store/index.js";
+import router from "../router";
+import axios from "axios";
+
 export default {
+methods:{
+    logout(){
+        axios.get('api/logout',{
+            headers: {
+                'Authorization' : 'Bearer ' + store.getters.getToken,
+            }
+        })
+            .then( response => {
+                if(response.data.status === true){
+                    this.user = response.data.data
+                }
+            } ).catch( error =>{
+            console.log(error);
+        } )
+        router.push({name : 'Auth'});
+        store.dispatch('removeToken');
+    }
+}
 }
 </script>
 
@@ -26,27 +51,27 @@ nav{
     border: 3px solid green;
     padding: 10px;
 }
-.aa{
+a{
+    color: darkblue;
     margin: auto;
-    width: 30%;
-    padding: 20px;
+    width: 10%;
+    padding: 10px;
+    background-color: lightgreen;
 }
-.aa:link {
+a:link {
     color: red;
+    text-decoration: none;
 }
 
 /* visited link */
-.aa:visited {
-    color: green;
-}
+
 
 /* mouse over link */
-.aa:hover {
+a:hover {
     color: hotpink;
+    text-decoration: underline;
 }
 
 /* selected link */
-.aa:active {
-    color: blue;
-}
+
 </style>

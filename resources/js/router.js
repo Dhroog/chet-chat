@@ -3,11 +3,22 @@ import auth from  './Pages/auth.vue';
 import chat from  './Pages/chat.vue';
 import home from './Pages/home.vue';
 import Dashboard from "./Pages/Dashboard.vue";
+import logout from './Pages/logout.vue';
+import store from "./Store/index.js";
+
 const routes = [
     {
         path : '/',
         name : 'Home',
         component : home,
+        meta : {
+            requiresAuth:true
+        }
+    },
+    {
+        path : '/',
+        name : 'Logout',
+        component : logout,
         meta : {
             requiresAuth:true
         }
@@ -44,11 +55,11 @@ const router = createRouter({
 });
 
 router.beforeEach((to,from) =>{
-    if(to.meta.requiresAuth && !localStorage.getItem('token')){
+    if(to.meta.requiresAuth && store.getters.getToken === 0 ){
         return {name : 'Auth' }
     }
-    if( to.meta.requiresAuth === false && localStorage.getItem('token')){
-        return {name : 'Chat' }
+    if( to.meta.requiresAuth === false && store.getters.getToken !== 0 ){
+        return {name : 'Dashboard' }
     }
 })
 
