@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendMessage;
+use App\Models\fr;
 use App\Models\Friend;
 use App\Models\Message;
 use App\Models\Room;
@@ -12,7 +13,9 @@ use App\Traits\GeneralTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use function PHPUnit\Framework\isEmpty;
 
 class ChatController extends Controller
 {
@@ -54,7 +57,13 @@ class ChatController extends Controller
     }
 
     public function UserExceptMe(){
-        $user = User::where('id','!=',auth::id())->get();
+
+        $array = fr::where('user_id','=',auth::id())->get('friend_id')->toArray();
+
+        array_push($array,auth::id());
+        array_push($array,1);
+        $user = User::whereNotIn('id',$array)->get();
+
         return $this->returnData('Success',$user);
 
     }
@@ -81,6 +90,14 @@ class ChatController extends Controller
                 $friend->user_id,
                 $friend->friend_id
             ]);
+
+            User::find($friend->id)->fr()->create([
+                'friend_id' => auth::id()
+            ]);
+            auth::user()->fr()->create([
+                'friend_id' => $friend->id
+            ]);
+
         }else {
             $friend = Friend::find($id);
             $friend->accept = false;
@@ -89,6 +106,7 @@ class ChatController extends Controller
         }
 
     }
+
     public function GetFriendShip()
     {
         $friends = Friend::where([
@@ -97,8 +115,27 @@ class ChatController extends Controller
         ])->get();
         return $this->returnData('success',$friends);
     }
+
     public function User($id){
         return $this->returnData('success',User::find($id));
+    }
+
+    public function uploadImage(Request $request){
+
+        $file = $request->file('image');
+        $name = uniqid() . '.' . $file->extension();
+        $file->move(public_path('Images'), $name);
+
+        $user = auth::user();
+        $user->image = $name;
+        $user->description = $request->description;
+        $user->save();
+
+        return $this->returnData('a',$name);
+    }
+
+    public function profile(){
+        return $this->returnData('success',auth::user());
     }
 
 

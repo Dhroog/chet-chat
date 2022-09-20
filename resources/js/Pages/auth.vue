@@ -1,7 +1,7 @@
 <template>
 
     <div class="body">
-        <h2>Weekly Coding Challenge #1: Sign in/up Form</h2>
+        <h2></h2>
         <div class="container" id="container">
             <div class="form-container sign-up-container">
                 <form @submit="SignUp">
@@ -37,12 +37,7 @@
             </div>
         </div>
         <footer>
-            <p>
-                Created with <i class="fa fa-heart"></i> by
-                <a target="_blank" href="https://florin-pop.com">Florin Pop</a>
-                - Read how I created this and how you can join the challenge
-                <a target="_blank" href="https://www.florin-pop.com/blog/2019/03/double-slider-sign-in-up-form/">here</a>.
-            </p>
+
         </footer>
     </div>
 </template>
@@ -51,6 +46,7 @@
 import axios from "axios";
 import { useRouter } from "vue-router"
 import router from "../router";
+import store from "../Store/index.js";
 
 export default {
     name:"auth",
@@ -97,7 +93,7 @@ export default {
                 password:this.password
             }).then( response => {
                 if( response.data.status ){
-                    localStorage.setItem('token',response.data.data.token);
+                    store.dispatch('setToken',response.data.data.token)
                     localStorage.setItem('id',response.data.data.id);
                     router.push({ name : 'Chat' })
                 }

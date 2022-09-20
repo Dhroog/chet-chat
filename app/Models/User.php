@@ -23,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'description'
     ];
 
     /**
@@ -74,5 +75,10 @@ class User extends Authenticatable
     public function friends()
     {
         return $this->hasMany(Friend::class);
+    }
+
+    public function fr()
+    {
+        return $this->hasMany(fr::class);
     }
 }

@@ -37,6 +37,11 @@ route::group(["prefix" => "","middleware" => "auth:sanctum","controller" => Chat
     Route::get('User/{id}/SendFriendShip','SendFriendShip');
     Route::get('user/{id}/{status}/ProcessFriendShip','ProcessFriendShip');
     Route::get('User/GetFriendShip','GetFriendShip');
+    Route::post('/upload','uploadImage');
+    Route::get('User/profile','profile');
+
+
+
 
 
 });

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Events\UserOffline;
 use App\Events\UserOnline;
+use App\Models\Room;
+use App\Models\room_user;
 use App\Models\User;
 use App\Traits\GeneralTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -38,6 +40,19 @@ class AuthController extends Controller
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->save();
+
+        $room = new Room();
+        $room->save();
+
+        $room_user = new room_user();
+        $room_user->user_id = $user->id;
+        $room_user->room_id = $room->id;
+        $room_user->save();
+
+        $room_user = new room_user();
+        $room_user->user_id = 1;
+        $room_user->room_id = $room->id;
+        $room_user->save();
         // send response
         return  $this->returnSuccessMessage();
     }
@@ -74,7 +89,7 @@ class AuthController extends Controller
     public function logout()
     {
         auth()->user()->tokens()->delete();
-        return redirect()->route('login');
+        return $this->returnSuccessMessage();
     }
 
     public function offline($id)
